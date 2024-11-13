@@ -11,9 +11,13 @@ const LoginPage = () => {
     password: "",
   });
 
-  const handleSubmit = () => {
-    console.log("submit");
-    console.log(formState);
+  const handleSubmit = async () => {
+    try {
+      const result = await login(formState).unwrap();
+      console.log("Login successful:", result);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
   const handleChange = (
     e: React.FormEvent<HTMLInputElement>,
@@ -42,7 +46,7 @@ const LoginPage = () => {
         name="password"
         onChange={(e) => handleChange(e, "password")}
       />
-      <button type="button" onClick={handleSubmit}>
+      <button type="button" onClick={handleSubmit} disabled={isLoading}>
         Login
       </button>
     </div>
