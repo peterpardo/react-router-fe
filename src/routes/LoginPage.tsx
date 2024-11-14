@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useLoginMutation } from "../services/authApiSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setCredentials } from "../store/authSlice";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const [formState, setFormState] = useState<{
     email: string;
@@ -10,13 +14,16 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async () => {
     try {
       const result = await login(formState).unwrap();
-      console.log("Login successful:", result);
+      dispatch(setCredentials(result.user));
+      navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      setMessage(error.data.message);
     }
   };
   const handleChange = (
@@ -49,6 +56,7 @@ const LoginPage = () => {
       <button type="button" onClick={handleSubmit} disabled={isLoading}>
         Login
       </button>
+      {message && <p>{message}</p>}
     </div>
   );
 };

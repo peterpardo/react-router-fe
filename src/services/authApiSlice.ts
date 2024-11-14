@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { AuthState } from "../store/authSlice";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -8,7 +9,7 @@ export const authApi = createApi({
   }),
   endpoints: (builder) => ({
     login: builder.mutation<
-      { message: string },
+      { message: string; user: AuthState },
       { email: string; password: string }
     >({
       query: (credentials) => ({
