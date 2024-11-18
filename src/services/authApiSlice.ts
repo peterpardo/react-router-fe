@@ -18,7 +18,10 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
+    checkSession: builder.query({
+      query: () => "/check-session",
+    }),
   }),
 });
 
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useCheckSessionQuery } = authApi;

@@ -7,6 +7,7 @@ import ErrorPage from "./routes/ErrorPage";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import LoginPage from "./routes/LoginPage";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
 
 const router = createBrowserRouter([
   {
@@ -20,11 +21,16 @@ const router = createBrowserRouter([
   },
   {
     path: "/public",
-    element: <div>Public page</div>,
+    element: <div>Public Page</div>,
   },
   {
-    path: "/protected",
-    element: <div>Protected Page</div>,
+    element: <ProtectedRoutes />,
+    children: [
+      {
+        path: "/protected",
+        element: <div>Protected Page</div>,
+      },
+    ],
   },
 ]);
 
