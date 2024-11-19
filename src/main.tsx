@@ -12,7 +12,7 @@ import ProtectedRoutes from "./routes/ProtectedRoutes";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <div>Public Page</div>,
     errorElement: <ErrorPage />,
   },
   {
@@ -20,12 +20,12 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: "/public",
-    element: <div>Public Page</div>,
-  },
-  {
     element: <ProtectedRoutes />,
     children: [
+      {
+        path: "/home",
+        element: <HomePage />,
+      },
       {
         path: "/protected",
         element: <div>Protected Page</div>,

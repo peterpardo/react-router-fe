@@ -1,12 +1,19 @@
-import React, { useState } from "react";
-import { useLoginMutation } from "../services/authApiSlice";
+import React, { useEffect, useState } from "react";
+import {
+  useCheckSessionQuery,
+  useLoginMutation,
+} from "../services/authApiSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { setCredentials } from "../store/authSlice";
+import Loading from "../components/Loading";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
+  const { data, isLoading: isCheckSessionQueryLoading } = useCheckSessionQuery(
+    {}
+  );
   const [formState, setFormState] = useState<{
     email: string;
     password: string;
@@ -15,17 +22,33 @@ const LoginPage = () => {
     password: "",
   });
   const navigate = useNavigate();
+  const location = useLocation();
   const [message, setMessage] = useState("");
+
+  const from = location.state?.from?.pathname || "/home";
+
+  useEffect(() => {
+    if (data) {
+      setCredentials(data);
+      navigate("/home", { replace: true });
+    }
+  }, [from, data, dispatch, navigate]);
+
+  if (isCheckSessionQueryLoading) {
+    return <Loading />;
+  }
 
   const handleSubmit = async () => {
     try {
       const result = await login(formState).unwrap();
       dispatch(setCredentials(result.user));
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (error) {
-      setMessage(error.data.message);
+      const apiError = error as { status: number; data: { message: string } };
+      setMessage(apiError?.data?.message || "An unexpected error occurred.");
     }
   };
+
   const handleChange = (
     e: React.FormEvent<HTMLInputElement>,
     field: string
